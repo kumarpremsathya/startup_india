@@ -1,8 +1,9 @@
 import os
 import pandas as pd
+from datetime import datetime
 
 # Folder containing Excel files
-folder_path = r"C:\Users\Premkumar.8265\Desktop\sui\test_09_09_24"
+folder_path = r"C:\Users\Premkumar.8265\Desktop\startup\test_27_09_24"
 
 # Function to read all Excel files in a folder
 def read_excel_files(folder_path):
@@ -31,7 +32,13 @@ combined_data = concatenate_dataframes(excel_data)
 
 if combined_data is not None:
     # Save the combined data to a single Excel file
-    combined_file_path = "API_7th_sui.xlsx"
+
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    combined_file_name = f"api_results_combined_{current_date}.xlsx"
+    combined_file_path  = fr"C:\Users\Premkumar.8265\Desktop\startup\data\api_results_combined\{combined_file_name}"
+  
+     
+    # combined_file_path = "API_7th_sui.xlsx"
     combined_data.to_excel(combined_file_path, index=False)
 
     print("Combined data saved to:", combined_file_path)

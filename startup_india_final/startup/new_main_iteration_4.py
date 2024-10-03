@@ -19,6 +19,9 @@ def current_date_time():
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     return dt_string
 
+
+
+
 start_row_no =0
 end_row_no = 1000
                                               
@@ -53,7 +56,12 @@ driver = webdriver.Chrome()
 # driverUtil.load_url(driver, "https://www.startupindia.gov.in/content/sih/en/search.html?roles=Startup&page=0#")
 
 # dbConnection = create_engine(config["db_data1"])
-input_df = pd.read_excel(r"C:\Users\Premkumar.8265\Desktop\startup\incremental_pageurls_09_09_2024.xlsx")
+
+current_date = datetime.now().strftime("%Y-%m-%d")
+incremental_pageurls_file_name = f"incremental_pageurls_{current_date}.xlsx"
+incremental_pageurls_file_path = fr"C:\Users\Premkumar.8265\Desktop\startup\data\incremental_pageurls\{incremental_pageurls_file_name}"
+
+input_df = pd.read_excel(incremental_pageurls_file_path)
 print(input_df)
 # df = data_provider.database_to_df(dbConnection, 'start_up_india')
 # df_new = data_provider.database_to_df(dbConnection, 'startup_demo')
@@ -147,7 +155,13 @@ for i, j in input_df["pageurl"].items():
     # data_provider.commit_to_db(mydb)
     all_data.append(data)
     new_df = pd.DataFrame(all_data, columns=column_names)
-    new_df.to_excel('pageurl_results_09_09_2024.xlsx', index=False)
+
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    pageurl_results_file_name = f"pageurl_results_{current_date}.xlsx"
+    pageurl_results_file_path = fr"C:\Users\Premkumar.8265\Desktop\startup\data\pageurl_results\{pageurl_results_file_name}"
+
+    new_df.to_excel(pageurl_results_file_path , index=False)
+    print(f"pageurl_results has been saved to {pageurl_results_file_path}")
 
     # try:
     #      data_provider.sql_table_to_db(dbConnection, new_df, "pending_6th_api")
@@ -173,14 +187,29 @@ import pandas as pd
 import time
 
 # Define the input and output file paths
-input_file = r'C:\Users\Premkumar.8265\Desktop\startup\incremental_pageurls_09_09_2024.xlsx'
-output_file = 'apiurl_results_09_09_2024.xlsx'
+
+
+current_date = datetime.now().strftime("%Y-%m-%d")
+incremental_pageurls_file_name = f"incremental_pageurls_{current_date}.xlsx"
+incremental_pageurls_file_path = fr"C:\Users\Premkumar.8265\Desktop\startup\data\incremental_pageurls\{incremental_pageurls_file_name}"
+
+
+
+# input_file = r'C:\Users\Premkumar.8265\Desktop\startup\incremental_pageurls_09_09_2024.xlsx'
+
+
+current_date = datetime.now().strftime("%Y-%m-%d")
+apiurl_results_file_name = f"apiurl_results_{current_date}.xlsx"
+apiurl_results_file_path = fr"C:\Users\Premkumar.8265\Desktop\startup\data\apiurl_results\{apiurl_results_file_name}"
+
+
+# output_file = 'apiurl_results_09_09_2024.xlsx'
 
 # Define the base URL template
 baseurl = "https://www.startupindia.gov.in/content/sih/en/profile.Startup.{}.html"
 
 # Read the URLs from the Excel file
-df_urls = pd.read_excel(input_file, sheet_name='Sheet1')  # Adjust sheet_name if needed
+df_urls = pd.read_excel(incremental_pageurls_file_path, sheet_name='Sheet1')  # Adjust sheet_name if needed
 urls = df_urls['API_urls']
 
 # Prepare a DataFrame to store all the results
@@ -241,7 +270,7 @@ for url in urls:
         time.sleep(3) 
         # Save to Excel after each request
         df_results = pd.DataFrame(results)
-        df_results.to_excel(output_file, index=False, engine='openpyxl')
+        df_results.to_excel(apiurl_results_file_path, index=False, engine='openpyxl')
         
         # Wait for 3 seconds before the next request
        
@@ -249,7 +278,7 @@ for url in urls:
     except Exception as e:
         print(f"Error processing URL {url}: {e}")
 
-print(f"Data has been saved to {output_file}")
+print(f"apiurl_results has been saved to {apiurl_results_file_path}")
 
 
 
@@ -268,17 +297,32 @@ desired_columns = [
 # Reorder columns
 merged_df = merged_df[desired_columns]
 
+
+
+
 # Save merged data to a new Excel file
-merged_file_path = 'combined_page_apiurls_09_09_2024.xlsx'
-merged_df.to_excel(merged_file_path, index=False)
+current_date = datetime.now().strftime("%Y-%m-%d")
+combined_page_apiurls_file_name = f"combined_page_apiurls_{current_date}.xlsx"
+combined_page_apiurls_file_path = fr"C:\Users\Premkumar.8265\Desktop\startup\data\combined_page_apiurls\{combined_page_apiurls_file_name}"
+
+
+# merged_file_path = 'combined_page_apiurls_09_09_2024.xlsx'
+merged_df.to_excel(combined_page_apiurls_file_path, index=False)
+
+print(f"combined_page_apiurls_results has been saved to {combined_page_apiurls_file_path}")
 
 
 
+# pre_final_df = pd.read_excel(r"C:\Users\Premkumar.8265\Desktop\startup\merged_output_09_09_2024.xlsx")
 
+current_date = datetime.now().strftime("%Y-%m-%d")
+merged_file_name = f"merged_output_{current_date}.xlsx"
+merged_file_path = fr"C:\Users\Premkumar.8265\Desktop\startup\data\merged_output\{merged_file_name}"
 
-pre_final_df = pd.read_excel(r"C:\Users\Premkumar.8265\Desktop\startup\merged_output_09_09_2024.xlsx")
-
+pre_final_df  = pd.read_excel(merged_file_path)
 # merged_df = pd.read_excel(r"C:\Users\Premkumar.8265\Desktop\startup\combined_page_apiurls.xlsx")
+
+merged_df = pd.read_excel(combined_page_apiurls_file_path)
 
 final_df = pd.merge(pre_final_df, merged_df, on='pageurl', how='left')
 
@@ -311,11 +355,17 @@ final_df = final_df[desired_columns]
 # Remove rows where 'companyName' column has empty values
 final_df = final_df.dropna(subset=['companyName'])
 
-final_file_path = 'final_excels_09_09_2024.xlsx'
-final_df.to_excel(final_file_path, index=False)
+
+current_date = datetime.now().strftime("%Y-%m-%d")
+final_excels_file_name = f"final_excels_{current_date}.xlsx"
+final_excels_file_path = fr"C:\Users\Premkumar.8265\Desktop\startup\data\final_excels\{final_excels_file_name}"
 
 
-print(f"Data has been saved to {final_file_path}")
+# final_file_path = 'final_excels_09_09_2024.xlsx'
+final_df.to_excel(final_excels_file_path, index=False)
+
+
+print(f"final_excels has been saved to {final_excels_file_path}")
 
 
 

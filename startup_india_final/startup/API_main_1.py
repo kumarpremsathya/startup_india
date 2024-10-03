@@ -45,15 +45,15 @@ payload_template = {
 
 def save_data_to_excel(data, file_name):
     # Convert the data to a DataFrame
-    df = pd.DataFrame(data, columns=["companyName", "dipp_number", "id", "focusIndustry", "focusSector", "state", "city", "stage", "DPIITRecognised"])
+    df = pd.DataFrame(data, columns=["name", "dippNumber", "id", "industries", "sectors", "state", "city", "stages", "dippRecognitionStatus"])
 
     # Convert list-type columns to string
-    list_columns = ["focusIndustry", "focusSector", "stage", "DPIITRecognised"]
+    list_columns = ["industries", "sectors", "stages", "dippRecognitionStatus"]
     for col in list_columns:
         df[col] = df[col].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
 
     # Generate 'page_url' based on the 'id' column
-    df['pageurl'] = df['id'].apply(lambda x: f"https://www.startupindia.gov.in/content/sih/en/profile.Startup.{x}.html")
+    df['page_url'] = df['id'].apply(lambda x: f"https://www.startupindia.gov.in/content/sih/en/profile.Startup.{x}.html")
 
     # Generate 'API_urls' based on the 'id' column
     apis_url = 'https://api.startupindia.gov.in/sih/api/common/replica/user/profile/'
@@ -65,11 +65,25 @@ def save_data_to_excel(data, file_name):
     # Drop unnecessary columns
     df = df.drop(columns=['state', 'city'])
 
+     # Rename columns
+    df.rename(columns={
+        "name": "companyName",
+        "dippNumber": "dipp_number",
+        "industries": "focusIndustry",
+        "sectors": "focusSector",
+        "stages": "stage",
+        "dippRecognitionStatus": "DPIITRecognised",
+        "page_url": "pageurl"
+    }, inplace=True)
+
     # Check if the file already exists
     if os.path.exists(file_name):
         # Append data to the existing file
         existing_df = pd.read_excel(file_name)
         combined_df = pd.concat([existing_df, df])
+
+        # Remove duplicates based on 'id' column
+        combined_df.drop_duplicates(subset=['pageurl'], keep='last', inplace=True)
         combined_df.to_excel(file_name, index=False)
     else:
         # Create a new file with the data
@@ -78,13 +92,28 @@ def save_data_to_excel(data, file_name):
 
 
 
+
+def get_last_page_number(file_name):
+    if os.path.exists(file_name):
+        df = pd.read_excel(file_name)
+        return len(df) // 9  # Assuming 9 results per page
+    return 0
+
+
 def fetch_all_data_for_state(state_id, state_name):
     all_data = []
     
-    page_num = 0
-    folder_name = 'test_09_09_24'
+    # page_num = 0
+    folder_name = 'test_25_09_24'
     os.makedirs(folder_name, exist_ok=True)  # Create the folder if it doesn't exist
     file_name = os.path.join(folder_name, f"{state_name}.xlsx")
+
+
+     # Get the last page number from existing data
+    start_page = get_last_page_number(file_name)
+    print(f"Resuming from page {start_page} for state: {state_name}")
+    
+    page_num = start_page
     
     while True:
         payload = payload_template.copy()
@@ -108,7 +137,7 @@ def fetch_all_data_for_state(state_id, state_name):
         print(f"No data found for state: {state_name}")
 
 # Read state IDs from the provided Excel sheet  
-state_data = pd.read_excel(r"C:\Users\Premkumar.8265\Desktop\sui\state_id_part1.xlsx")
+state_data = pd.read_excel(r"C:\Users\Premkumar.8265\Desktop\startup\state_id_part2.xlsx")
 
 # Iterate through each state ID and fetch data
 for index, row in state_data.iterrows():

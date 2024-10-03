@@ -21,8 +21,8 @@ def insert_excel_data_to_mysql(final_excel_sheets_path):
                 if count == 0:
                     insert_query = f"""
                         INSERT INTO {startup_india_config.table_name} (DPIIT, companyName, stage, focusIndustry, focusSector, serviceArea,
-                                                location, noOfYear, companyURL, aboutDetails,joinedDate, DPIITRecognised,activeSince,dipp_number,legalName,cin,pan,pageurl)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                                location, noOfYear, companyURL, aboutDetails,joinedDate, DPIITRecognised,activeSince,dipp_number,legalName,cin,pan,pageurl,company_availability_status)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """
                     values = (
                         row['DPIIT'],
@@ -42,7 +42,8 @@ def insert_excel_data_to_mysql(final_excel_sheets_path):
                         row['legalName'],
                         row['cin'],
                         row['pan'],
-                        row['pageurl']
+                        row['pageurl'],
+                        'YES'  # Set company_availability_status to 'YES' for new entries
                         
                     )
 
@@ -57,7 +58,7 @@ def insert_excel_data_to_mysql(final_excel_sheets_path):
         startup_india_config.no_data_scraped = data_inserted
         print("Data inserted into the database table")
         startup_india_config.log_list[1] = "Success"
-        startup_india_config.log_list[3] = f"{startup_india_config.updated_count} data updated, {startup_india_config.no_data_scraped} new data"
+        startup_india_config.log_list[3] = f"{startup_india_config.updated_count} data updated, {startup_india_config.no_data_scraped} new data, {startup_india_config.new_deleted_count} newly deleted "
         log.insert_log_into_table(startup_india_config.log_list)
         startup_india_config.log_list = [None] * 4
 

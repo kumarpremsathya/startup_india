@@ -17,8 +17,8 @@ def insert_log_into_table(log_list):
         'total_record_count': get_data_count_database.get_data_count_database(),
         'failure_reason': log_list[2] if log_list[2] else None,
         'comments': log_list[3] if log_list[3] else None,
-        'deleted_source': startup_india_config.deleted_sources if startup_india_config.deleted_sources else None,
-        'deleted_source_count': startup_india_config.deleted_source_count,
+        'deleted_source': startup_india_config.new_deleted_sources if startup_india_config.new_deleted_sources else None,
+        'deleted_source_count': startup_india_config.total_deleted_count,
         'source_status': startup_india_config.source_status
 
     }
