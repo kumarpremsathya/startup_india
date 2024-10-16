@@ -54,11 +54,11 @@ def insert_excel_data_to_mysql(final_excel_sheets_path):
                     cursor.execute(insert_query, values)
                     data_inserted += 1
         connection.commit()
-        startup_india_config.no_data_avaliable = data_inserted
-        startup_india_config.no_data_scraped = data_inserted
+        startup_india_config.no_data_avaliable = data_inserted+startup_india_config.updated_count
+        startup_india_config.no_data_scraped = data_inserted+startup_india_config.updated_count
         print("Data inserted into the database table")
         startup_india_config.log_list[1] = "Success"
-        startup_india_config.log_list[3] = f"{startup_india_config.updated_count} data updated, {startup_india_config.no_data_scraped} new data, {startup_india_config.new_deleted_count} newly deleted "
+        startup_india_config.log_list[3] = f"{startup_india_config.updated_count} data updated, {startup_india_config.newly_added} new data, {startup_india_config.new_deleted_count} newly deleted "
         log.insert_log_into_table(startup_india_config.log_list)
         startup_india_config.log_list = [None] * 4
 

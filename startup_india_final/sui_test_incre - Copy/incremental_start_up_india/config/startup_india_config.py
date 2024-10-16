@@ -19,10 +19,11 @@ def browser_configure():
     return browser
 
 
-log_list = [None] * 4
+log_list = [None] * 14
 no_data_avaliable = 0
 no_data_scraped = 0
 deleted_sources = ""
+newly_added= 0
 updated_count = 0
 total_deleted_count = 0
 new_deleted_sources = []
@@ -31,15 +32,16 @@ checking_data_in_database = 0
 source_name = "startupIndia"
 table_name = "sui_final"
 
-host = '4.213.77.165'
-user = 'root1'
-password = 'Mysql1234$'
-database = 'startup_india'
 
-# host = 'localhost'
-# user = 'root'
-# password = 'root'
-# database = 'startup'
+# host = '4.213.77.165'
+# user = 'root1'
+# password = 'Mysql1234$'
+# database = 'startup_india'
+
+host = 'localhost'
+user = 'root'
+password = 'root'
+database = 'startup'
 
 current_date = datetime.now().strftime("%Y-%m-%d")
 

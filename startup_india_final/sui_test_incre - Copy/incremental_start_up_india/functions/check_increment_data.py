@@ -190,6 +190,8 @@ def check_increment_data(new_data_file):
         startup_india_config.total_deleted_count = total_deleted_count
         startup_india_config.new_deleted_sources = new_deleted_pageurls
         startup_india_config.new_deleted_count = new_deleted_count
+
+        startup_india_config.newly_added = new_data_count
         
         # for row in deleted_pageurls:
         #     startup_india_config.deleted_sources += row + ", "
